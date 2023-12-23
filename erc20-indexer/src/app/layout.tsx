@@ -17,6 +17,8 @@ import {
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { Provider } from 'react-redux';
+import store from '@/stateManager/store';
 
 
 const { chains, publicClient } = configureChains(
@@ -53,7 +55,9 @@ export default function RootLayout({
       <body>
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
+          <Provider store={store}>
             {children}
+          </Provider>
           </RainbowKitProvider>
         </WagmiConfig>
       </body>
