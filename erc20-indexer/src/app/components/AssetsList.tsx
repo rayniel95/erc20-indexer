@@ -1,70 +1,65 @@
 'use client'
 
 import { useState, useCallback } from "react";
-import { AssetTransfersCategory } from "alchemy-sdk";
+import { AssetTransfersCategory, TokenBalanceType } from "alchemy-sdk";
 import InfiniteScroll from "react-infinite-scroller";
 import { Alchemy, Network, Utils } from 'alchemy-sdk';
 import { Spinner } from "react-bootstrap";
 import { useAccount, useNetwork, usePublicClient } from "wagmi";
+import { getAlchemyClient } from "@/util/clientConfig";
 
-const itemsPerPage = 10
 
 export default function AssetsList() {
-	const [items, setItems] = useState<any[]>([]);
-	const [pageKey, setPageKey] = useState<string | undefined>(undefined)
-  const { chain, chains } = useNetwork()
-  const { address, isConnecting, isDisconnected } = useAccount()
+  //TODO - maybe turn this two states into memoized vars
+  const [items, setItems] = useState<any[]>([]);
+  const [pageKey, setPageKey] = useState<string | undefined>(undefined)
+  const { chain} = useNetwork()
+  const { address } = useAccount()
 
-	const hasMore = (pageKey == undefined && items.length == 0) || (pageKey != undefined && items.length > 0)
+  const hasMore = (pageKey == undefined && items.length == 0) || (pageKey != undefined && items.length > 0)
 
+  const alchemy = getAlchemyClient(chain)
 
-	async function fetchData() {
-		const body: {
-			category: AssetTransfersCategory[];
-			maxCount: number;
-			fromAddress: undefined | string;
-			toAddress: undefined | string;
-			pageKey: undefined | string;
-		} = {
-			category: [AssetTransfersCategory.EXTERNAL, AssetTransfersCategory.INTERNAL],
-			maxCount: itemsPerPage,
-			fromAddress: undefined,
-			toAddress: undefined,
-			pageKey: pageKey ? pageKey : undefined,
-		}
-		try {
-      const data = await alchemy.core.getTokenBalances('ass', {});
-			setItems(items.concat(response.transfers))
-			setPageKey(response.pageKey)
-		} catch (error) {
-			console.error('Error:', error);
-		}
-	}
+  async function fetchData() {
+    try {
+      const data = await alchemy.core.getTokenBalances(
+        address as string,
+        {
+          type: TokenBalanceType.ERC20,
+          pageKey,
+        }
+      );
+      setItems(items.concat(data.tokenBalances))
+      setPageKey(data.pageKey)
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
-	return (
-		<div style={{ height: "700px", overflow: "auto" }}>
-			<InfiniteScroll
-				loadMore={fetchData}
-				hasMore={hasMore}
-				loader={
-					<Spinner key={-1} animation="border" variant="primary" />
-				}
-				pageStart={0}
-				useWindow={false}
-			>
-				{
-					items.map(
-						(item) => (
-							<div key={item.hash}>
-								<TransactionItem item={item}  />
-								<hr />
-							</div>
-						)
-					)
-				}
-			</InfiniteScroll>
-		</div>
-	);
+  return (
+    <div style={{ height: "700px", overflow: "auto" }}>
+      <InfiniteScroll
+        loadMore={fetchData}
+        hasMore={hasMore}
+        loader={
+          <Spinner key={-1} animation="border" variant="primary" />
+        }
+        pageStart={0}
+        useWindow={false}
+      >
+        {
+          items.map(
+            (item) => (
+              <div key={item.hash}>
+                {/* <TransactionItem item={item}  /> */}
+                <hr />
+              </div>
+            )
+          )
+        }
+      </InfiniteScroll>
+    </div>
+  );
 }
 
 /*
