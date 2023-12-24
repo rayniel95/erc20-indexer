@@ -16,18 +16,18 @@ import {
 } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { Provider } from 'react-redux';
 import store from '@/stateManager/store';
 
-
+//TODO - how to add the api key for mainnet?
 const { chains, publicClient } = configureChains(
   [mainnet, sepolia],
   [
+    alchemyProvider({ apiKey: process.env.ETHEREUM_MAINNET_API_KEY! }),
     alchemyProvider({ apiKey: process.env.ETHEREUM_SEPOLIA_API_KEY! }),
-    publicProvider()
   ]
 );
+
 const { connectors } = getDefaultWallets({
   appName: 'erc20-indexer',
   projectId: 'bf583d6f62ad91e6aa73335e2ace5257',
@@ -55,6 +55,7 @@ export default function RootLayout({
       <body>
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
+            {/* TODO - this provider would be not necessary */}
           <Provider store={store}>
             {children}
           </Provider>
