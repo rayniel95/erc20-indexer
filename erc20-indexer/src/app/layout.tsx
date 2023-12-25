@@ -23,8 +23,8 @@ import store from '@/stateManager/store';
 const { chains, publicClient } = configureChains(
   [mainnet, sepolia],
   [
-    alchemyProvider({ apiKey: process.env.ETHEREUM_MAINNET_API_KEY! }),
-    alchemyProvider({ apiKey: process.env.ETHEREUM_SEPOLIA_API_KEY! }),
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ETHEREUM_MAINNET_API_KEY! }),
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ETHEREUM_SEPOLIA_API_KEY! }),
   ]
 );
 
