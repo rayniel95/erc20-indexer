@@ -19,3 +19,8 @@ export function getAlchemyClient(chain: any) {
 
     return new Alchemy(config);
 }
+
+export const NetworkUrls: Record<string, string> = {
+    [Network.ETH_MAINNET]: "https://eth-mainnet.g.alchemy.com/v2",
+    [Network.ETH_SEPOLIA]: "https://eth-sepolia.g.alchemy.com/v2",
+}
