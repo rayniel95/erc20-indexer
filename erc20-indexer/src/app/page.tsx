@@ -1,9 +1,14 @@
+'use client'
+
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Col, Container, Row } from "react-bootstrap";
 import AssetsList from "./components/AssetsList";
+import { useAccount } from "wagmi";
 
 
 export default function Home() {
+  const {isConnected } = useAccount()
+
   return (
     <main>
       <Container>
@@ -19,7 +24,7 @@ export default function Home() {
         <hr />
         <Row>
           <Col>
-            <AssetsList/>
+            {isConnected && <AssetsList/>}
           </Col>
         </Row>
       </Container>
