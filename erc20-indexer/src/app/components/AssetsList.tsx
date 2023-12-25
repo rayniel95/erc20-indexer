@@ -6,7 +6,9 @@ import InfiniteScroll from "react-infinite-scroller";
 import { Alchemy, Network, Utils } from 'alchemy-sdk';
 import { Spinner } from "react-bootstrap";
 import { useAccount, useNetwork, usePublicClient } from "wagmi";
-import { getAlchemyClient } from "@/util/clientConfig";
+import { getAlchemyClient, NetworkUrls } from "@/util/clientConfig";
+import ERC20Token from "./ERC20Token";
+import { getTokenMetadataBatch } from "@/util/batchTokenMetadata";
 
 
 export default function AssetsList() {
@@ -29,7 +31,13 @@ export default function AssetsList() {
           pageKey,
         }
       );
-      setItems(items.concat(data.tokenBalances))
+      const tokenMetadata = await getTokenMetadataBatch(
+        data.tokenBalances.map((item) => item.contractAddress),
+        NetworkUrls[alchemy.config.network],
+        alchemy.config.apiKey
+      )
+      
+      setItems(items.concat(data.tokenBalances.map((item, index) => ({ ...item, ...tokenMetadata[index] }))))
       setPageKey(data.pageKey)
     } catch (error) {
       console.error('Error:', error);
@@ -50,8 +58,8 @@ export default function AssetsList() {
         {
           items.map(
             (item) => (
-              <div key={item.hash}>
-                {/* <TransactionItem item={item}  /> */}
+              <div key={item.contractAddress}>
+                <ERC20Token symbol={item.symbol} balance={item.balance} logo={item.logo} decimals={item.decimals} />
                 <hr />
               </div>
             )
