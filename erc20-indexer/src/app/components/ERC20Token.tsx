@@ -1,6 +1,7 @@
 'use client'
 
 import { Utils } from "alchemy-sdk";
+import { Col, Container, Row } from "react-bootstrap";
 import Image from 'react-bootstrap/Image';
 
 
@@ -12,16 +13,18 @@ export interface IERC20TokenProps {
 }
 
 export default function ERC20Token({ symbol, balance, logo, decimals }: IERC20TokenProps) {
-
+    const decimalBalance = Utils.formatUnits(balance, decimals);
     return (
-        <>
-            <b>Symbol:</b> ${symbol}&nbsp;
-            <b>Balance:</b>&nbsp;
-            {Utils.formatUnits(
-                balance,
-                decimals
-            )}
-            <Image src={logo} rounded />
-        </>
+        <Container>
+            <Row>
+                <Col>
+                    <p>Symbol: {symbol}</p>
+                    <p>Balance: {decimalBalance}</p>
+                </Col>
+                <Col>
+                    <Image src={logo} />
+                </Col>
+            </Row>
+        </Container>
     );
 }
