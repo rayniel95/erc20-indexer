@@ -1,4 +1,6 @@
-export async function getTokenMetadataBatch(contracts: string[], networkUrl: string, apiKey: string): Promise<Array<any>> {
+import { TokenMetadataResponse } from "alchemy-sdk"
+
+export async function getTokenMetadataBatch(contracts: string[], networkUrl: string, apiKey: string): Promise<Array<{result: TokenMetadataResponse}>> {
     const reqs = []
     for (let i = 0; i < contracts.length; i++) {
         reqs.push({
@@ -13,6 +15,6 @@ export async function getTokenMetadataBatch(contracts: string[], networkUrl: str
         `${networkUrl}/${apiKey}/`,
         { method: 'POST', body: JSON.stringify(reqs), headers: { 'Content-Type': 'application/json' } }
     )
-    const result: Array<{ id: number }> = await res.json()
+    const result: Array<{ id: number, result: TokenMetadataResponse }> = await res.json()
     return result
 }
