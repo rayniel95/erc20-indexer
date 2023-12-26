@@ -48,7 +48,7 @@ export default function RootLayout({
     <html lang="en">
       <Head>
         <title>Erc20 Indexer</title>
-        <meta name="description" content="AU Module 3 project" />
+        <meta name="description" content="AU Module 6 project" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
