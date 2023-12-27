@@ -15,7 +15,6 @@ import {
   sepolia,
 } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { Provider } from 'react-redux';
 
 
 const { chains, publicClient } = configureChains(
