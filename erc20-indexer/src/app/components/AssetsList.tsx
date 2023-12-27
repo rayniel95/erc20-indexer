@@ -16,12 +16,9 @@ export interface IAssetsListProps {
 type TokenResponse = TokenMetadataResponse & TokenBalance
 
 export default function AssetsList({ chain, address }: IAssetsListProps) {
-  //TODO - maybe turn this two states into memoized vars
-  // const [items, setItems] = useState<TokenResponse[]>([]);
-  // const [pageKey, setPageKey] = useState<string | undefined>(undefined)
-  let items: TokenResponse[] = []
-  let pageKey: string | undefined = undefined
-
+  const [items, setItems] = useState<TokenResponse[]>([]);
+  const [pageKey, setPageKey] = useState<string | undefined>(undefined)
+   
   const hasMore = (pageKey == undefined && items.length == 0) || (pageKey != undefined && items.length > 0)
 
   const alchemy = getAlchemyClient(chain)
@@ -42,17 +39,15 @@ export default function AssetsList({ chain, address }: IAssetsListProps) {
       )
       console.log(items)
       const newItems = items.concat(data.tokenBalances.map((item, index) => ({ ...item, ...tokenMetadata[index].result })))
-      // setItems(newItems)
-      // setPageKey(data.pageKey)
-      items = newItems
-      pageKey = data.pageKey
+      setItems(newItems)
+      setPageKey(data.pageKey)
     } catch (error) {
       console.error('Error:', error);
     }
   }, [items, pageKey])
 
   return (
-    <div style={{ height: "700px", overflow: "auto" }}>
+    // <div style={{ height: "700px", overflow: "auto" }}>
       <InfiniteScroll
         loadMore={fetchData}
         hasMore={hasMore}
@@ -62,17 +57,17 @@ export default function AssetsList({ chain, address }: IAssetsListProps) {
         pageStart={0}
         useWindow={false}
       >
-        {
-          items.length > 0 && items.map(
+        <ul>
+          {items.length > 0 && items.map(
             (item, index) => (
-              <div key={index}>
+              <li key={index}>
                 <ERC20Token symbol={item.symbol!} balance={item.tokenBalance!} logo={item.logo!} decimals={item.decimals!} />
                 <hr />
-              </div>
+              </li>
             )
-          )
-        }
+          )}
+        </ul>
       </InfiniteScroll>
-    </div>
+    // </div>
   );
 }
