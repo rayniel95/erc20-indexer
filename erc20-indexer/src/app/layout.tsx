@@ -15,11 +15,9 @@ import {
   sepolia,
 } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
 import { Provider } from 'react-redux';
-import store from '@/stateManager/store';
 
-//TODO - how to add the api key for mainnet?
+
 const { chains, publicClient } = configureChains(
   [mainnet, sepolia],
   [
@@ -55,10 +53,7 @@ export default function RootLayout({
       <body>
         <WagmiConfig config={wagmiConfig}>
           <RainbowKitProvider chains={chains}>
-            {/* TODO - this provider would be not necessary */}
-          <Provider store={store}>
             {children}
-          </Provider>
           </RainbowKitProvider>
         </WagmiConfig>
       </body>
